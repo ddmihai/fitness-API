@@ -1,0 +1,39 @@
+import { body } from 'express-validator';
+
+export const userSignupValidationSchema = [
+    body('username')
+        .notEmpty().withMessage('Username is required')
+        .toLowerCase() // sanitize: convert to lowercase automatically
+        .trim()
+        .escape(), // sanitize: escape HTML chars
+
+    body('firstName')
+        .notEmpty().withMessage('First name is required')
+        .trim()
+        .escape() // sanitize: escape HTML entities to prevent XSS
+        .matches(/^[A-Za-z]+$/).withMessage('First name must contain only letters'),
+
+    body('lastName')
+        .notEmpty().withMessage('Last name is required')
+        .trim()
+        .escape()
+        .matches(/^[A-Za-z]+$/).withMessage('Last name must contain only letters'),
+
+    body('email')
+        .notEmpty().withMessage('Email is required')
+        .isEmail().withMessage('Must be a valid email')
+        .normalizeEmail(), // sanitize: normalize email
+
+    body('avatar')
+        .optional()
+        .isURL().withMessage('Avatar must be a valid URL')
+        .trim()
+        .escape(),
+
+    body('password')
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+        .matches(/[a-z]/).withMessage('Password must contain a lowercase letter')
+        .matches(/[A-Z]/).withMessage('Password must contain an uppercase letter')
+        .matches(/\d/).withMessage('Password must contain a number'),
+];
