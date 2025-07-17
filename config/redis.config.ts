@@ -3,10 +3,10 @@
 import { createClient } from 'redis';
 
 const isProduction = process.env.NODE_ENV === 'production';
-
+// dw
 export const redisClient = createClient({
     url: isProduction
-        ? process.env.REDIS_URL // e.g. rediss://default:<token>@host:6379
+        ? process.env.REDIS_URL
         : 'redis://127.0.0.1:6379',
 });
 
