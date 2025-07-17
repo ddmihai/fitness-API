@@ -3,17 +3,21 @@ import signupController from '../controllers/users/createUsers/signup.controller
 import { userSignupValidationSchema } from '../middlewares/validators/signup';
 import { validateRequest } from '../middlewares/validators/validator.middleware';
 import { loginUser } from '../controllers/users/loginUser/loginUser.controller';
+import { authenticationLimiter } from '../middlewares/security/rateLimiter';
+import { jwtAuth } from '../middlewares/auth/jwtAuth';
+import { getLoggedinUser } from '../controllers/users/getLoggedInUser/getLoggedInUser.controller';
 
 const userRouter = Router();
 
 // Signup route
 userRouter.post('/signup', userSignupValidationSchema, validateRequest, signupController);
 
-
-
-
 // Login route
-userRouter.post('/login', loginUser);
+userRouter.post('/login', authenticationLimiter, loginUser);
+
+
+// Get loggedin user
+userRouter.get('/logged-user', jwtAuth, getLoggedinUser);
 
 // Edit user route
 userRouter.put('/:id', (req: Request, res: Response) => {
@@ -25,10 +29,6 @@ userRouter.delete('/:id', (req: Request, res: Response) => {
     // Call delete controller here
 });
 
-// Get all users
-userRouter.get('/', (req: Request, res: Response) => {
-    // Call get users controller here
-});
 
 // Filter users (e.g., by query params)
 userRouter.get('/filter', (req: Request, res: Response) => {

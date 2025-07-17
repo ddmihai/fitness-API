@@ -8,11 +8,16 @@ const signup_controller_1 = __importDefault(require("../controllers/users/create
 const signup_1 = require("../middlewares/validators/signup");
 const validator_middleware_1 = require("../middlewares/validators/validator.middleware");
 const loginUser_controller_1 = require("../controllers/users/loginUser/loginUser.controller");
+const rateLimiter_1 = require("../middlewares/security/rateLimiter");
+const jwtAuth_1 = require("../middlewares/auth/jwtAuth");
+const getLoggedInUser_controller_1 = require("../controllers/users/getLoggedInUser/getLoggedInUser.controller");
 const userRouter = (0, express_1.Router)();
 // Signup route
 userRouter.post('/signup', signup_1.userSignupValidationSchema, validator_middleware_1.validateRequest, signup_controller_1.default);
 // Login route
-userRouter.post('/login', loginUser_controller_1.loginUser);
+userRouter.post('/login', rateLimiter_1.authenticationLimiter, loginUser_controller_1.loginUser);
+// Get loggedin user
+userRouter.get('/logged-user', jwtAuth_1.jwtAuth, getLoggedInUser_controller_1.getLoggedinUser);
 // Edit user route
 userRouter.put('/:id', (req, res) => {
     // Call edit controller here
@@ -20,10 +25,6 @@ userRouter.put('/:id', (req, res) => {
 // Delete user route
 userRouter.delete('/:id', (req, res) => {
     // Call delete controller here
-});
-// Get all users
-userRouter.get('/', (req, res) => {
-    // Call get users controller here
 });
 // Filter users (e.g., by query params)
 userRouter.get('/filter', (req, res) => {
