@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const error_service_1 = require("../../../helpers/http_responses/error.service");
 const users_1 = require("../../../dataAccessObject/users/users");
 const user_model_1 = __importDefault(require("../../../models/user.model"));
+const role_model_1 = require("../../../models/role.model");
+const permissions_constants_1 = require("../../../helpers/constants/permissions.constants");
 const signupController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, firstName, lastName, email, password } = req.body;
@@ -23,22 +25,35 @@ const signupController = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         const normalizedEmail = email.toLowerCase().trim();
         const sanitizedFirstName = firstName.toLowerCase().trim();
         const sanitizedLastName = lastName.toLowerCase().trim();
+        // create a user role (client) if not exists
+        let clientRole = yield role_model_1.Role.findOne({ name: "Client" });
+        if (!clientRole) {
+            clientRole = yield role_model_1.Role.create({
+                name: "Client",
+                displayName: "Basic User",
+                description: "Basic user with limited access",
+                permissions: [permissions_constants_1.PERMISSIONS.client.CLIENT_BASIC]
+            });
+        }
         // Check if email already exists
         const existingUser = yield (0, users_1.selectUserByEmail)(normalizedEmail);
         if (existingUser) {
             return (0, error_service_1.sendError)(res, 400, 'Email already exists', 'A user with this email already exists.');
         }
+        ;
         // Check if username already exists
         const existingUsername = yield user_model_1.default.findOne({ username: normalizedUsername });
         if (existingUsername) {
             return (0, error_service_1.sendError)(res, 400, 'Username already exists', 'A user with this username already exists.');
         }
+        ;
         // Create and save new user
         const createdUser = yield user_model_1.default.create({
             username: normalizedUsername,
             firstName: sanitizedFirstName,
             lastName: sanitizedLastName,
             email: normalizedEmail,
+            roles: [clientRole._id], // Assign the client role to the user
             avatar: 'https://www.gravatar.com/avatar/?d=mp&s=200',
             password
         });

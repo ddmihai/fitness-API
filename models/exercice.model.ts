@@ -5,39 +5,48 @@ import { lowercase } from "zod";
 
 
 export interface IExercise extends mongoose.Document {
-    _id: Types.ObjectId; // internal MongoDB ID
-    id: string; // API exercise ID or your own generated ID for manual
+    _id: Types.ObjectId;                                                        // internal MongoDB ID
     name: string;
-    bodyPart: string;
-    equipment: string;
-    target: string;
-    secondaryMuscles?: string[];
+    imageUrl: string[],
+    bodyPart: string;                                                           // Eg. Chest, legs, arms, abs, EYES :)))) hahah
+    equipment: string;                                                          // Gym machine if required
+    targetMuscle: string;                                                       // Primary muscle target
+    secondaryMuscles?: string[];                                                // Secondary muscle target list [triceps, delts, front delts, etc]
     instructions?: string[];
+    videoUrl?: string;
+    tags: string[];                                                             // e.g. ['compound', 'dumbbell', 'home']
+    focus: 'strength' | 'hypertrophy' | 'mobility' | 'rehab' | 'cardio';
+    isBodyweight: boolean;
     description?: string;
     difficulty?: 'beginner' | 'intermediate' | 'advanced';
-    category?: string;
+    category?: 'GYM' | 'HOME';                                                  // Eg. Gym, Home, or else
 
-    // Tracking who added it:
-    addedBy: Types.ObjectId | 'system';
-    addedAt: Date;   // timestamp for when it was added (optional but useful)
-
-    // Optional flag to distinguish manual vs API source
-    isManual?: boolean; // true if added manually, false or undefined if from API
+    // Tracking who added it and METADATA:
+    addedBy: Types.ObjectId;
+    verified?: boolean;                                                         // e.g. only show verified exercises
+    addedAt: Date;                                                              // timestamp for when it was added (optional but useful)
 }
 
 
 
 const exerciceSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true,
-        trim: true,
-        lowercase: true, // Ensure name is stored in lowercase
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
+
+    imageUrl: {
+        type: [String],
+        validate: {
+            validator: function (urls: string[]) {
+                return urls.every(url => /^https?:\/\/.+/.test(url));
+            },
+            message: 'Each image must be a valid URL.'
+        },
+        required: true
     },
 
     bodyPart: {
@@ -54,7 +63,7 @@ const exerciceSchema = new mongoose.Schema({
         trim: true
     },
 
-    target: {
+    targetMuscle: {
         type: String,
         required: true,
         lowercase: true,
@@ -73,6 +82,36 @@ const exerciceSchema = new mongoose.Schema({
         trim: true
     },
 
+    videoUrl: {
+        type: String,
+        trim: true,
+        validate: {
+            validator: function (url: string) {
+                return !url || /^https?:\/\/.+/.test(url);
+            },
+            message: 'Video URL must be valid if provided'
+        }
+    },
+
+    tags: {
+        type: [String],
+        lowercase: true,
+        trim: true
+    },
+
+    focus: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        enum: ['strength', 'hypertrophy', 'mobility', 'rehab', 'cardio']
+    },
+
+    isBodyweight: {
+        type: Boolean,
+        required: true
+    },
+
     description: {
         type: String,
         lowercase: true,
@@ -82,13 +121,20 @@ const exerciceSchema = new mongoose.Schema({
     difficulty: {
         type: String,
         lowercase: true,
-        trim: true
+        trim: true,
+        enum: ['beginner', 'intermediate', 'advanced']
     },
 
     category: {
         type: String,
         lowercase: true,
-        trim: true
+        trim: true,
+        enum: ['gym', 'home']
+    },
+
+    verified: {
+        type: Boolean,
+        default: false
     },
 
     addedBy: {
@@ -107,11 +153,6 @@ const exerciceSchema = new mongoose.Schema({
     addedAt: {
         type: Date,
         default: Date.now
-    },
-
-    isManual: {
-        type: Boolean,
-        default: false
     }
 });
 

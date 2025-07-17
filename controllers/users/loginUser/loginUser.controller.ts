@@ -3,6 +3,7 @@ import User from '../../../models/user.model';
 import { sendError } from '../../../helpers/http_responses/error.service';
 import jwt from 'jsonwebtoken';
 import ENV from '../../../config/env.config';
+import { Role } from '../../../models/role.model';
 
 
 
@@ -21,12 +22,14 @@ export const loginUser = async (req: Request, res: Response) => {
         const isPasswordValid = await userToFind?.comparePassword(password);
         if (!isPasswordValid) return sendError(res, 401, 'Invalid credentials!');
 
+        // add roles to the JWT. fetch the role assigned
+        const role = await Role.findOne({ _id: userToFind.roles });
 
 
 
         // // Create JWT token asynchronously
         const token = jwt.sign(
-            { userId: userToFind._id, role: userToFind.roles },
+            { userId: userToFind._id, role: role?._id },
             ENV.JWT_SECRET,
             { expiresIn: '1h' }
         );

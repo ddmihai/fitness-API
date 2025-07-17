@@ -1,12 +1,13 @@
 import dotenv from "dotenv";
+import { get } from "http";
 dotenv.config();
 
 interface EnvConfig {
-    RAPID_API_KEY: string;
-    RAPID_API_HOST: string;
     MONGO_URI: string;
     REDIS_URL: string;
     JWT_SECRET: string;
+    ADMIN_EMAIL: string;
+    ADMIN_PASSW: string;
 }
 
 
@@ -26,10 +27,10 @@ function getEnvVar(key: string, required = true): string {
 // Sanity check
 const ENV = {
     MONGO_URI: getEnvVar("MONGO_URI"),
-    RAPID_API_KEY: getEnvVar("RAPID_API_KEY"),
-    RAPID_API_HOST: getEnvVar("RAPID_API_HOST"),
     REDIS_URL: getEnvVar("REDIS_URL"),
-    JWT_SECRET: getEnvVar("JWT_SECRET")
+    JWT_SECRET: getEnvVar("JWT_SECRET"),
+    ADMIN_EMAIL: getEnvVar("ADMIN_EMAIL"),
+    ADMIN_PASSW: getEnvVar("ADMIN_PASSW")
 };
 
 

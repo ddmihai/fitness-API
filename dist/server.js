@@ -17,11 +17,13 @@ const http_1 = __importDefault(require("http"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const db_config_1 = __importDefault(require("./database/db.config"));
 const redis_config_1 = require("./config/redis.config");
+const create_admin_1 = require("./helpers/seeds/create_admin");
 dotenv_1.default.config();
 const PORT = process.env.PORT || 3000;
 const server = http_1.default.createServer(app_1.default);
 server.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, db_config_1.default)();
+    yield (0, create_admin_1.createAdminUser)();
     yield (0, redis_config_1.connectRedis)();
     console.log(`Server is running on port ${PORT}`);
 }));

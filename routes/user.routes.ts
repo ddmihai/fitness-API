@@ -19,6 +19,10 @@ userRouter.post('/login', authenticationLimiter, loginUser);
 // Get loggedin user
 userRouter.get('/logged-user', jwtAuth, getLoggedinUser);
 
+
+
+// IMPLEMENTATIONS I HAVENT IMPLEMENTED FOR NOW
+
 // Edit user route
 userRouter.put('/:id', (req: Request, res: Response) => {
     // Call edit controller here

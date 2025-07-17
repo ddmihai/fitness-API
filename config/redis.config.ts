@@ -3,6 +3,11 @@
 import { createClient } from 'redis';
 
 const isProduction = process.env.NODE_ENV === 'production';
+if (!isProduction && process.env.REDIS_URL) {
+    console.warn("⚠️ Warning: REDIS_URL is set in development! Make sure you're not using production Redis.");
+}
+
+
 // dw
 export const redisClient = createClient({
     url: isProduction

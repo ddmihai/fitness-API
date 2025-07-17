@@ -18,6 +18,7 @@ userRouter.post('/signup', signup_1.userSignupValidationSchema, validator_middle
 userRouter.post('/login', rateLimiter_1.authenticationLimiter, loginUser_controller_1.loginUser);
 // Get loggedin user
 userRouter.get('/logged-user', jwtAuth_1.jwtAuth, getLoggedInUser_controller_1.getLoggedinUser);
+// IMPLEMENTATIONS I HAVENT IMPLEMENTED FOR NOW
 // Edit user route
 userRouter.put('/:id', (req, res) => {
     // Call edit controller here

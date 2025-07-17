@@ -17,9 +17,9 @@ function getEnvVar(key, required = true) {
 // Sanity check
 const ENV = {
     MONGO_URI: getEnvVar("MONGO_URI"),
-    RAPID_API_KEY: getEnvVar("RAPID_API_KEY"),
-    RAPID_API_HOST: getEnvVar("RAPID_API_HOST"),
     REDIS_URL: getEnvVar("REDIS_URL"),
-    JWT_SECRET: getEnvVar("JWT_SECRET")
+    JWT_SECRET: getEnvVar("JWT_SECRET"),
+    ADMIN_EMAIL: getEnvVar("ADMIN_EMAIL"),
+    ADMIN_PASSW: getEnvVar("ADMIN_PASSW")
 };
 exports.default = ENV;

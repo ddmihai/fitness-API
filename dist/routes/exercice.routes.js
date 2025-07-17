@@ -2,7 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const rateLimiter_1 = require("../middlewares/security/rateLimiter");
-const getExerciceByTargetMuscle_1 = require("../controllers/exercices/getExerciceByTargetMuscle/getExerciceByTargetMuscle");
+const createExercice_middleware_1 = require("../middlewares/validators/createExercice.middleware");
+const validator_middleware_1 = require("../middlewares/validators/validator.middleware");
+const createExercice_controller_1 = require("../controllers/exercices/createExercice/createExercice.controller");
+const allowCreationOdExercices_1 = require("../middlewares/auth/allowCreationOdExercices");
+const permissions_constants_1 = require("../helpers/constants/permissions.constants");
+// import { getExercisesByTargetMuscle } from '../controllers/exercices/getExerciceByTargetMuscle/getExerciceByTargetMuscle';
+// import getAllExercices from '../controllers/exercices/getAllExercice/getAllExercices.controller';
 const exerciceRouter = (0, express_1.Router)();
-exerciceRouter.get('/get-exercice-by-target-muscle/:targetMuscle', rateLimiter_1.exerciceLimiter, getExerciceByTargetMuscle_1.getExercisesByTargetMuscle);
+exerciceRouter.post('/create-exercice', rateLimiter_1.exerciceLimiter, (0, allowCreationOdExercices_1.requirePermission)(permissions_constants_1.PERMISSIONS.admin.CREATE_EXERCICES || permissions_constants_1.PERMISSIONS.trainer.CREATE_EXERCICES), createExercice_middleware_1.exerciseValidationSchema, validator_middleware_1.validateRequest, createExercice_controller_1.createExercice);
+// exerciceRouter.get('/get-exercice-by-target-muscle/:targetMuscle', exerciceLimiter, getExercisesByTargetMuscle);
+// exerciceRouter.get('/get-all-exercices', exerciceLimiter, getAllExercices);
 exports.default = exerciceRouter;

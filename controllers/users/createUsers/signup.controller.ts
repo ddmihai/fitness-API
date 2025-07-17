@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { sendError } from '../../../helpers/http_responses/error.service';
 import { selectUserByEmail } from '../../../dataAccessObject/users/users';
 import User, { IUser } from '../../../models/user.model';
+import { Role } from '../../../models/role.model';
+import { PERMISSIONS } from '../../../helpers/constants/permissions.constants';
 
 
 
@@ -16,18 +18,39 @@ const signupController = async (req: Request, res: Response, next: NextFunction)
         const sanitizedLastName = lastName.toLowerCase().trim();
 
 
+        // create a user role (client) if not exists
+        let clientRole = await Role.findOne({ name: "Client" });
+        if (!clientRole) {
+            clientRole = await Role.create({
+                name: "Client",
+                displayName: "Basic User",
+                description: "Basic user with limited access",
+                permissions: [PERMISSIONS.client.CLIENT_BASIC]
+            });
+        }
+
+
+
+
+
 
         // Check if email already exists
         const existingUser = await selectUserByEmail(normalizedEmail);
         if (existingUser) {
             return sendError(res, 400, 'Email already exists', 'A user with this email already exists.');
-        }
+        };
+
+
+
+
 
         // Check if username already exists
         const existingUsername = await User.findOne({ username: normalizedUsername });
         if (existingUsername) {
             return sendError(res, 400, 'Username already exists', 'A user with this username already exists.');
-        }
+        };
+
+
 
         // Create and save new user
         const createdUser = await User.create({
@@ -35,6 +58,7 @@ const signupController = async (req: Request, res: Response, next: NextFunction)
             firstName: sanitizedFirstName,
             lastName: sanitizedLastName,
             email: normalizedEmail,
+            roles: [clientRole._id], // Assign the client role to the user
             avatar: 'https://www.gravatar.com/avatar/?d=mp&s=200',
             password
         });

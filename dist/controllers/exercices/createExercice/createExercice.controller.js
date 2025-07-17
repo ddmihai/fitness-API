@@ -9,14 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const exerciceDB_service_1 = require("../../../helpers/requestExerciceData/exerciceDB.service");
-const getAllExercices = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createExercice = void 0;
+const createExercice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield (0, exerciceDB_service_1.requestExerciseDB)({ endpoint: 'exercises/getAll' });
-        res.status(200).json(data);
     }
     catch (error) {
-        next(error);
     }
 });
-exports.default = getAllExercices;
+exports.createExercice = createExercice;

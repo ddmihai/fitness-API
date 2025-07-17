@@ -5,16 +5,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const exerciceSchema = new mongoose_1.default.Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true,
-        trim: true,
-        lowercase: true, // Ensure name is stored in lowercase
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
+    imageUrl: {
+        type: [String],
+        validate: {
+            validator: function (urls) {
+                return urls.every(url => /^https?:\/\/.+/.test(url));
+            },
+            message: 'Each image must be a valid URL.'
+        },
+        required: true
     },
     bodyPart: {
         type: String,
@@ -28,7 +34,7 @@ const exerciceSchema = new mongoose_1.default.Schema({
         lowercase: true,
         trim: true
     },
-    target: {
+    targetMuscle: {
         type: String,
         required: true,
         lowercase: true,
@@ -44,6 +50,32 @@ const exerciceSchema = new mongoose_1.default.Schema({
         lowercase: true,
         trim: true
     },
+    videoUrl: {
+        type: String,
+        trim: true,
+        validate: {
+            validator: function (url) {
+                return !url || /^https?:\/\/.+/.test(url);
+            },
+            message: 'Video URL must be valid if provided'
+        }
+    },
+    tags: {
+        type: [String],
+        lowercase: true,
+        trim: true
+    },
+    focus: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        enum: ['strength', 'hypertrophy', 'mobility', 'rehab', 'cardio']
+    },
+    isBodyweight: {
+        type: Boolean,
+        required: true
+    },
     description: {
         type: String,
         lowercase: true,
@@ -52,12 +84,18 @@ const exerciceSchema = new mongoose_1.default.Schema({
     difficulty: {
         type: String,
         lowercase: true,
-        trim: true
+        trim: true,
+        enum: ['beginner', 'intermediate', 'advanced']
     },
     category: {
         type: String,
         lowercase: true,
-        trim: true
+        trim: true,
+        enum: ['gym', 'home']
+    },
+    verified: {
+        type: Boolean,
+        default: false
     },
     addedBy: {
         type: mongoose_1.default.Schema.Types.Mixed,
@@ -72,10 +110,6 @@ const exerciceSchema = new mongoose_1.default.Schema({
     addedAt: {
         type: Date,
         default: Date.now
-    },
-    isManual: {
-        type: Boolean,
-        default: false
     }
 });
 // Ensure unique combination of name and bodyPart

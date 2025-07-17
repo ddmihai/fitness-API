@@ -3,6 +3,7 @@ import http from 'http';
 import dotenv from 'dotenv';
 import connectDB from './database/db.config';
 import { connectRedis } from './config/redis.config';
+import { createAdminUser } from './helpers/seeds/create_admin';
 dotenv.config();
 
 
@@ -12,6 +13,7 @@ const server = http.createServer(app);
 
 server.listen(PORT, async () => {
     await connectDB();
+    await createAdminUser();
     await connectRedis();
     console.log(`Server is running on port ${PORT}`);
 });

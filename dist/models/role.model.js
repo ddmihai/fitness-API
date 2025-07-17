@@ -23,10 +23,6 @@ const roleSchema = new mongoose_1.default.Schema({
     permissions: {
         type: [String], // e.g., ["manage_clients", "view_dashboard", "delete_content"]
         default: []
-    },
-    isSystemRole: {
-        type: Boolean,
-        default: false // true if core role like 'admin' (cannot be deleted from dashboard)
-    },
+    }
 }, { timestamps: true });
 exports.Role = mongoose_1.default.model("Role", roleSchema, "roles");

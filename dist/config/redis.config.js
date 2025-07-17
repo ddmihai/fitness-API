@@ -13,6 +13,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectRedis = exports.redisClient = void 0;
 const redis_1 = require("redis");
 const isProduction = process.env.NODE_ENV === 'production';
+if (!isProduction && process.env.REDIS_URL) {
+    console.warn("⚠️ Warning: REDIS_URL is set in development! Make sure you're not using production Redis.");
+}
 // dw
 exports.redisClient = (0, redis_1.createClient)({
     url: isProduction
