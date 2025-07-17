@@ -6,6 +6,9 @@ import userRouter from './routes/user.routes';
 import { authenticationLimiter, exerciceLimiter } from './middlewares/security/rateLimiter';
 import exerciceRouter from './routes/exercice.routes';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.config';
+
 
 
 const app: Application = express();
@@ -18,6 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.set('trust proxy', 1); // or true
 app.use(cookieParser());
+
+
+// documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 
 // Basic page route

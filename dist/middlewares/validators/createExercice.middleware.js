@@ -9,10 +9,15 @@ exports.exerciseValidationSchema = [
         .toLowerCase()
         .trim()
         .escape(),
-    (0, express_validator_1.body)("imageUrl")
-        .isArray({ min: 1 }).withMessage("imageUrl must be a non-empty array")
-        .custom((urls) => urls.every(url => /^https?:\/\/.+/.test(url)))
-        .withMessage("Each image must be a valid URL"),
+    (0, express_validator_1.body)('imageUrl')
+        .isArray()
+        .optional()
+        .withMessage('imageUrl must be a non-empty array')
+        .custom((images) => images.every(img => typeof img.url === 'string' &&
+        /^https?:\/\/.+/.test(img.url) &&
+        typeof img.publicId === 'string' &&
+        img.publicId.trim().length > 0))
+        .withMessage('Each image must have a valid url and a non-empty publicId'),
     (0, express_validator_1.body)("bodyPart")
         .notEmpty().withMessage("Body part is required")
         .isString()

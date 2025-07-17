@@ -13,14 +13,20 @@ const exerciceSchema = new mongoose_1.default.Schema({
         trim: true
     },
     imageUrl: {
-        type: [String],
-        validate: {
-            validator: function (urls) {
-                return urls.every(url => /^https?:\/\/.+/.test(url));
-            },
-            message: 'Each image must be a valid URL.'
-        },
-        required: true
+        type: [{
+                url: {
+                    type: String,
+                    required: false,
+                    validate: {
+                        validator: (url) => /^https?:\/\/.+/.test(url),
+                        message: 'Each image URL must be a valid URL.'
+                    }
+                },
+                publicId: {
+                    type: String,
+                    required: true
+                }
+            }]
     },
     bodyPart: {
         type: String,

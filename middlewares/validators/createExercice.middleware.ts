@@ -8,10 +8,20 @@ export const exerciseValidationSchema = [
         .trim()
         .escape(),
 
-    body("imageUrl")
-        .isArray({ min: 1 }).withMessage("imageUrl must be a non-empty array")
-        .custom((urls: string[]) => urls.every(url => /^https?:\/\/.+/.test(url)))
-        .withMessage("Each image must be a valid URL"),
+    body('imageUrl')
+        .isArray()
+        .optional()
+        .withMessage('imageUrl must be a non-empty array')
+        .custom((images: any[]) =>
+            images.every(
+                img => typeof img.url === 'string' &&
+                    /^https?:\/\/.+/.test(img.url) &&
+                    typeof img.publicId === 'string' &&
+                    img.publicId.trim().length > 0
+            )
+        )
+        .withMessage('Each image must have a valid url and a non-empty publicId'),
+
 
     body("bodyPart")
         .notEmpty().withMessage("Body part is required")

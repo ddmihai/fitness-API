@@ -8,6 +8,10 @@ interface EnvConfig {
     JWT_SECRET: string;
     ADMIN_EMAIL: string;
     ADMIN_PASSW: string;
+
+    CLOUDINARY_CLOUD_NAME: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_API_SECRET: string
 }
 
 
@@ -30,7 +34,10 @@ const ENV = {
     REDIS_URL: getEnvVar("REDIS_URL"),
     JWT_SECRET: getEnvVar("JWT_SECRET"),
     ADMIN_EMAIL: getEnvVar("ADMIN_EMAIL"),
-    ADMIN_PASSW: getEnvVar("ADMIN_PASSW")
+    ADMIN_PASSW: getEnvVar("ADMIN_PASSW"),
+    CLOUDINARY_API_KEY: getEnvVar("CLOUDINARY_API_KEY"),
+    CLOUDINARY_API_SECRET: getEnvVar("CLOUDINARY_API_SECRET"),
+    CLOUDINARY_CLOUD_NAME: getEnvVar("CLOUDINARY_CLOUD_NAME")
 };
 
 

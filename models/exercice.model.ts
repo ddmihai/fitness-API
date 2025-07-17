@@ -2,12 +2,15 @@ import mongoose, { Types } from "mongoose";
 import { lowercase } from "zod";
 
 
-
+interface imageObject {
+    url: String,
+    publicId: String,
+}
 
 export interface IExercise extends mongoose.Document {
     _id: Types.ObjectId;                                                        // internal MongoDB ID
     name: string;
-    imageUrl: string[],
+    imageUrl: imageObject[],
     bodyPart: string;                                                           // Eg. Chest, legs, arms, abs, EYES :)))) hahah
     equipment: string;                                                          // Gym machine if required
     targetMuscle: string;                                                       // Primary muscle target
@@ -39,15 +42,22 @@ const exerciceSchema = new mongoose.Schema({
     },
 
     imageUrl: {
-        type: [String],
-        validate: {
-            validator: function (urls: string[]) {
-                return urls.every(url => /^https?:\/\/.+/.test(url));
+        type: [{
+            url: {
+                type: String,
+                required: false,
+                validate: {
+                    validator: (url: string) => /^https?:\/\/.+/.test(url),
+                    message: 'Each image URL must be a valid URL.'
+                }
             },
-            message: 'Each image must be a valid URL.'
-        },
-        required: true
+            publicId: {
+                type: String,
+                required: true
+            }
+        }]
     },
+
 
     bodyPart: {
         type: String,

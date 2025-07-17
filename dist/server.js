@@ -26,6 +26,7 @@ server.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, create_admin_1.createAdminUser)();
     yield (0, redis_config_1.connectRedis)();
     console.log(`Server is running on port ${PORT}`);
+    console.log(`Swagger docs at http://localhost:${PORT}/api-docs`);
 }));
 process.on('SIGTERM', () => {
     console.info('SIGTERM signal received. Closing server...');
