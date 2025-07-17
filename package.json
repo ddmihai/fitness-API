@@ -7,7 +7,11 @@
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "start": "node dist/server.js",
+    "push-git": "git add . && git commit -m 'Auto-commit' && git push origin main",
+    "publish": "npm run clean && npm run build && npm run push-git",
     "dev": "nodemon --exec ts-node server.ts"
   },
   "dependencies": {
