@@ -49,7 +49,7 @@ const getExercisesByTargetMuscle = (request, response) => __awaiter(void 0, void
         const exercisesFromDB = yield exercice_model_1.default.find({ target: normalizedTarget });
         if (exercisesFromDB.length > 0) {
             // Set cache asynchronously
-            redis_config_1.redisClient.set(cacheKey, JSON.stringify(exercisesFromDB), { EX: 60 * 60 * 10 }).catch(console.error);
+            redis_config_1.redisClient.set(cacheKey, JSON.stringify(exercisesFromDB), { EX: 3600 }).catch(console.error);
             return response.status(200).json({
                 status: 'success',
                 message: `Exercises fetched successfully from DB for target muscle: ${normalizedTarget}`,
@@ -70,7 +70,7 @@ const getExercisesByTargetMuscle = (request, response) => __awaiter(void 0, void
                 return (0, error_service_1.sendError)(response, 404, 'No exercises found', `No exercises found for target muscle: ${normalizedTarget}`);
             }
             // Cache API response temporarily to reduce external calls
-            redis_config_1.redisClient.set(apiCacheKey, JSON.stringify(exercisesFromAPI), { EX: 60 * 15 }).catch(console.error); // 15 minutes
+            redis_config_1.redisClient.set(apiCacheKey, JSON.stringify(exercisesFromAPI), { EX: 3600 }).catch(console.error); // 15 minutes
         }
         // ✅ Bulk upsert (prevent duplicates)
         const operations = exercisesFromAPI.map((exercise) => ({
@@ -85,10 +85,7 @@ const getExercisesByTargetMuscle = (request, response) => __awaiter(void 0, void
         const bulkResult = yield exercice_model_1.default.bulkWrite(operations, { ordered: false });
         // ✅ Refetch to return consistent data
         const allExercises = yield exercice_model_1.default.find({ target: normalizedTarget });
-        // ✅ Set TTL based on manual entries
-        const hasManual = allExercises.some((ex) => ex.isManual === true);
-        const ttl = hasManual ? 60 * 60 * 2 : 60 * 60 * 10;
-        redis_config_1.redisClient.set(cacheKey, JSON.stringify(allExercises), { EX: ttl }).catch(console.error);
+        redis_config_1.redisClient.set(cacheKey, JSON.stringify(allExercises), { EX: 3600 }).catch(console.error);
         return response.status(201).json({
             status: 'success',
             message: `Exercises saved and returned for target muscle: ${normalizedTarget}`,

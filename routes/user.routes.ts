@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import signupController from '../controllers/users/createUsers/signup.controller';
 import { userSignupValidationSchema } from '../middlewares/validators/signup';
 import { validateRequest } from '../middlewares/validators/validator.middleware';
+import { loginUser } from '../controllers/users/loginUser/loginUser.controller';
 
 const userRouter = Router();
 
@@ -12,9 +13,7 @@ userRouter.post('/signup', userSignupValidationSchema, validateRequest, signupCo
 
 
 // Login route
-userRouter.post('/login', (req: Request, res: Response) => {
-    // Call login controller here
-});
+userRouter.post('/login', loginUser);
 
 // Edit user route
 userRouter.put('/:id', (req: Request, res: Response) => {

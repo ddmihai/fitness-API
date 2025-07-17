@@ -12,13 +12,15 @@ function getEnvVar(key, required = true) {
         console.error(`❌ Missing required environment variable: ${key}`);
         process.exit(1);
     }
-    return value || "";
+    return (value === null || value === void 0 ? void 0 : value.trim()) || "";
 }
 // Sanity check
 const ENV = {
     MONGO_URI: getEnvVar("MONGO_URI"),
     RAPID_API_KEY: getEnvVar("RAPID_API_KEY"),
     RAPID_API_HOST: getEnvVar("RAPID_API_HOST"),
-    REDIS_URL: getEnvVar("REDIS_URL")
+    REDIS_URL: getEnvVar("REDIS_URL"),
+    JWT_SECRET: getEnvVar("JWT_SECRET"),
+    JWT_EXPIRES_IN: getEnvVar("JWT_EXPIRES_IN") || ''
 };
 exports.default = ENV;

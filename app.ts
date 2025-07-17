@@ -1,10 +1,12 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
-import cors from 'cors';
 import helmet from 'helmet';
+import cors from 'cors';
 import userRouter from './routes/user.routes';
 import { authenticationLimiter, exerciceLimiter } from './middlewares/security/rateLimiter';
 import exerciceRouter from './routes/exercice.routes';
+import cookieParser from 'cookie-parser';
+
 
 const app: Application = express();
 
@@ -15,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.set('trust proxy', 1); // or true
+app.use(cookieParser());
 
 
 // Basic page route

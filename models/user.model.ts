@@ -14,6 +14,8 @@ export interface IUser extends Document {
     avatar?: string;
     password: string;
     createdAt: Date;
+    // compare password
+    comparePassword(candidatePassword: string): Promise<boolean>;
     updatedAt: Date;
     roles?: mongoose.Types.ObjectId[] | IRole[];
 }
@@ -75,15 +77,17 @@ const userSchema = new Schema<IUser>(
         password: {
             type: String,
             required: true,
-            minlength: 6,
+            minlength: 8,
             select: false,
             validate: {
                 validator: function (v: string) {
-                    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(v);
+                    // At least one lowercase, one uppercase, one digit, minimum 8 characters, allows special chars
+                    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(v);
                 },
                 message: () =>
-                    `Password must be at least 6 characters long and contain uppercase, lowercase, and a number.`,
+                    `Password must be at least 8 characters long and contain uppercase, lowercase, and a number.`,
             }
+
         }
     },
     {

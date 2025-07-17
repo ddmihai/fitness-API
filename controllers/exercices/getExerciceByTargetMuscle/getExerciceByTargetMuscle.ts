@@ -40,7 +40,7 @@ export const getExercisesByTargetMuscle = async (request: Request, response: Res
         const exercisesFromDB = await Exercice.find({ target: normalizedTarget });
         if (exercisesFromDB.length > 0) {
             // Set cache asynchronously
-            redisClient.set(cacheKey, JSON.stringify(exercisesFromDB), { EX: 60 * 60 * 10 }).catch(console.error);
+            redisClient.set(cacheKey, JSON.stringify(exercisesFromDB), { EX: 3600 }).catch(console.error);
             return response.status(200).json({
                 status: 'success',
                 message: `Exercises fetched successfully from DB for target muscle: ${normalizedTarget}`,
@@ -65,7 +65,7 @@ export const getExercisesByTargetMuscle = async (request: Request, response: Res
             }
 
             // Cache API response temporarily to reduce external calls
-            redisClient.set(apiCacheKey, JSON.stringify(exercisesFromAPI), { EX: 60 * 15 }).catch(console.error); // 15 minutes
+            redisClient.set(apiCacheKey, JSON.stringify(exercisesFromAPI), { EX: 3600 }).catch(console.error); // 15 minutes
         }
 
         // ✅ Bulk upsert (prevent duplicates)
@@ -89,11 +89,8 @@ export const getExercisesByTargetMuscle = async (request: Request, response: Res
         // ✅ Refetch to return consistent data
         const allExercises = await Exercice.find({ target: normalizedTarget });
 
-        // ✅ Set TTL based on manual entries
-        const hasManual = allExercises.some((ex: any) => ex.isManual === true);
-        const ttl = hasManual ? 60 * 60 * 2 : 60 * 60 * 10;
 
-        redisClient.set(cacheKey, JSON.stringify(allExercises), { EX: ttl }).catch(console.error);
+        redisClient.set(cacheKey, JSON.stringify(allExercises), { EX: 3600 }).catch(console.error);
 
         return response.status(201).json({
             status: 'success',
