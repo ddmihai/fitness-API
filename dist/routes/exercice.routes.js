@@ -9,12 +9,13 @@ const allowCreationOdExercices_1 = require("../middlewares/auth/allowCreationOdE
 const permissions_constants_1 = require("../helpers/constants/permissions.constants");
 const uploads_middleware_1 = require("../middlewares/uploads/uploads.middleware");
 const uploadImagesExercice_controller_1 = require("../controllers/exercices/uploadImagesExercice/uploadImagesExercice.controller");
+const deleteImages_controller_1 = require("../controllers/exercices/deleteImages/deleteImages.controller");
 // import { getExercisesByTargetMuscle } from '../controllers/exercices/getExerciceByTargetMuscle/getExerciceByTargetMuscle';
 // import getAllExercices from '../controllers/exercices/getAllExercice/getAllExercices.controller';
 const exerciceRouter = (0, express_1.Router)();
-exerciceRouter.post('/create-exercice', rateLimiter_1.exerciceLimiter, (0, allowCreationOdExercices_1.requirePermission)(permissions_constants_1.PERMISSIONS.admin.CREATE_EXERCICES || permissions_constants_1.PERMISSIONS.trainer.CREATE_EXERCICES), createExercice_middleware_1.exerciseValidationSchema, validator_middleware_1.validateRequest, createExercice_controller_1.createExercice);
-exerciceRouter.post('/add-images', /*uploadExerciceImages*/ rateLimiter_1.exerciceLimiter, (0, allowCreationOdExercices_1.requirePermission)(permissions_constants_1.PERMISSIONS.admin.CREATE_EXERCICES || permissions_constants_1.PERMISSIONS.trainer.CREATE_EXERCICES));
-exerciceRouter.post('/upload', uploads_middleware_1.upload.single('image'), (0, allowCreationOdExercices_1.requirePermission)(permissions_constants_1.PERMISSIONS.admin.CREATE_EXERCICES || permissions_constants_1.PERMISSIONS.trainer.CREATE_EXERCICES), uploadImagesExercice_controller_1.uploadExerciceImages);
+exerciceRouter.post('/create-exercice', rateLimiter_1.exerciceLimiter, (0, allowCreationOdExercices_1.requirePermission)(permissions_constants_1.PERMISSIONS.admin.CREATE_EXERCICES), createExercice_middleware_1.exerciseValidationSchema, validator_middleware_1.validateRequest, createExercice_controller_1.createExercice);
+exerciceRouter.post('/upload', rateLimiter_1.exerciceLimiter, uploads_middleware_1.upload.single('image'), (0, allowCreationOdExercices_1.requirePermission)(permissions_constants_1.PERMISSIONS.admin.CREATE_EXERCICES), uploadImagesExercice_controller_1.uploadExerciceImages);
+exerciceRouter.delete('/delete-image/:exerciceId/:imageId', rateLimiter_1.exerciceLimiter, (0, allowCreationOdExercices_1.requirePermission)(permissions_constants_1.PERMISSIONS.admin.CREATE_EXERCICES), deleteImages_controller_1.deleteImagesFromExercice);
 // exerciceRouter.get('/get-exercice-by-target-muscle/:targetMuscle', exerciceLimiter, getExercisesByTargetMuscle);
 // exerciceRouter.get('/get-all-exercices', exerciceLimiter, getAllExercices);
 exports.default = exerciceRouter;
