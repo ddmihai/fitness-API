@@ -1,33 +1,24 @@
+// src/config/redis.config.ts
+
 import { createClient } from 'redis';
 
+const isProduction = process.env.NODE_ENV === 'production';
 
-const redisUrl = process.env.NODE_ENV === 'production' ? process.env.REDIS_URL : 'redis://127.0.0.1:6379';
 export const redisClient = createClient({
-    url: redisUrl,
-    socket: {
-        tls: true, // required for Upstash
-        host: process.env.REDIS_HOST || '127.0.0.1', // required by RedisTlsOptions
-        rejectUnauthorized: false, // required to skip self-signed cert warnings
-    },
+    url: isProduction
+        ? process.env.REDIS_URL // e.g. rediss://default:<token>@host:6379
+        : 'redis://127.0.0.1:6379',
 });
-
 
 redisClient.on('error', (err) => {
     console.error('❌ Redis Client Error', err);
 });
-
-
-redisClient.on('error', (err) => {
-    console.error('❌ Redis Client Error', err);
-});
-
 
 export const connectRedis = async () => {
     try {
         await redisClient.connect();
         console.log('✅ Connected to Redis');
-    }
-    catch (err) {
+    } catch (err) {
         console.error('❌ Redis connection failed', err);
     }
 };

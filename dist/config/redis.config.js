@@ -1,4 +1,5 @@
 "use strict";
+// src/config/redis.config.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -11,17 +12,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectRedis = exports.redisClient = void 0;
 const redis_1 = require("redis");
-const redisUrl = process.env.NODE_ENV === 'production' ? process.env.REDIS_URL : 'redis://127.0.0.1:6379';
+const isProduction = process.env.NODE_ENV === 'production';
 exports.redisClient = (0, redis_1.createClient)({
-    url: redisUrl,
-    socket: {
-        tls: true, // required for Upstash
-        host: process.env.REDIS_HOST || '127.0.0.1', // required by RedisTlsOptions
-        rejectUnauthorized: false, // required to skip self-signed cert warnings
-    },
-});
-exports.redisClient.on('error', (err) => {
-    console.error('❌ Redis Client Error', err);
+    url: isProduction
+        ? process.env.REDIS_URL // e.g. rediss://default:<token>@host:6379
+        : 'redis://127.0.0.1:6379',
 });
 exports.redisClient.on('error', (err) => {
     console.error('❌ Redis Client Error', err);
