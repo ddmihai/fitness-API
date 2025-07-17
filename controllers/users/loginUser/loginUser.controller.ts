@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User, { IUser } from '../../../models/user.model';
+import User from '../../../models/user.model';
 import { sendError } from '../../../helpers/http_responses/error.service';
 import jwt from 'jsonwebtoken';
 import ENV from '../../../config/env.config';

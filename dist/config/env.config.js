@@ -20,7 +20,6 @@ const ENV = {
     RAPID_API_KEY: getEnvVar("RAPID_API_KEY"),
     RAPID_API_HOST: getEnvVar("RAPID_API_HOST"),
     REDIS_URL: getEnvVar("REDIS_URL"),
-    JWT_SECRET: getEnvVar("JWT_SECRET"),
-    JWT_EXPIRES_IN: getEnvVar("JWT_EXPIRES_IN") || ''
+    JWT_SECRET: getEnvVar("JWT_SECRET")
 };
 exports.default = ENV;
