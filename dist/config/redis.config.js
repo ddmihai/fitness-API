@@ -11,8 +11,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectRedis = exports.redisClient = void 0;
 const redis_1 = require("redis");
-const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
-exports.redisClient = (0, redis_1.createClient)({ url: redisUrl });
+const redisUrl = process.env.NODE_ENV === 'production' ? process.env.REDIS_URL : 'redis://127.0.0.1:6379';
+exports.redisClient = (0, redis_1.createClient)({
+    url: redisUrl,
+    socket: {
+        tls: true, // required for Upstash
+        host: process.env.REDIS_HOST || '127.0.0.1', // required by RedisTlsOptions
+        rejectUnauthorized: false, // required to skip self-signed cert warnings
+    },
+});
+exports.redisClient.on('error', (err) => {
+    console.error('❌ Redis Client Error', err);
+});
 exports.redisClient.on('error', (err) => {
     console.error('❌ Redis Client Error', err);
 });

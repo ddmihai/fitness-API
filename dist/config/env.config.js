@@ -19,5 +19,6 @@ const ENV = {
     MONGO_URI: getEnvVar("MONGO_URI"),
     RAPID_API_KEY: getEnvVar("RAPID_API_KEY"),
     RAPID_API_HOST: getEnvVar("RAPID_API_HOST"),
+    REDIS_URL: getEnvVar("REDIS_URL")
 };
 exports.default = ENV;
