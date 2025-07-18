@@ -8,6 +8,7 @@ import { PERMISSIONS } from '../helpers/constants/permissions.constants';
 import { upload } from '../middlewares/uploads/uploads.middleware';
 import { uploadExerciceImages } from '../controllers/exercices/uploadImagesExercice/uploadImagesExercice.controller';
 import { deleteImagesFromExercice } from '../controllers/exercices/deleteImages/deleteImages.controller';
+import { deleteExercice } from '../controllers/exercices/deleteExercice/deleteExercice.controller';
 
 
 // import { getExercisesByTargetMuscle } from '../controllers/exercices/getExerciceByTargetMuscle/getExerciceByTargetMuscle';
@@ -38,6 +39,13 @@ exerciceRouter.delete('/delete-image/:exerciceId/:imageId',
     exerciceLimiter,
     requirePermission(PERMISSIONS.admin.CREATE_EXERCICES),
     deleteImagesFromExercice
+);
+
+
+exerciceRouter.delete('/delete-exercice/:exerciceId',
+    exerciceLimiter,
+    requirePermission(PERMISSIONS.admin.DELETE_EXERCICE),
+    deleteExercice
 );
 
 

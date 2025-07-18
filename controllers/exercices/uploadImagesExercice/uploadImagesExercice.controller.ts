@@ -32,6 +32,7 @@ export const uploadExerciceImages = async (req: Request, res: Response) => {
 
 
         if (!mongoose.isValidObjectId(exerciceId)) {
+            await cloudinary.uploader.destroy(req.file.filename || publicId);
             return sendError(res, 400, 'Invalid exercice ID format');
         }
 

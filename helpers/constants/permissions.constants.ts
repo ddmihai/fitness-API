@@ -4,7 +4,11 @@ export const PERMISSIONS = {
         MANAGE_ROLES: "manage_roles",
         MANAGE_CONTENT: "manage_content",
         VIEW_ADMIN_DASHBOARD: "view_admin_dashboard",
-        CREATE_EXERCICES: "create_exercices"
+
+        // EXERCICES
+        CREATE_EXERCICES: "create_exercices",
+        DELETE_EXERCICE: "delete_exercice"
+
     },
     trainer: {
         CREATE_PERSONAL_WORKOUTS: "create_personal_workouts",
@@ -13,7 +17,10 @@ export const PERMISSIONS = {
         VIEW_TRAINER_DASHBOARD: "view_trainer_dashboard",
         VIEW_CLIENT_PROGRESS: "view_client_progress",
         CREATE_GROUP_WORKOUTS: "create_group_workouts",
-        CREATE_EXERCICES: "create_exercices"
+
+        // exercices
+        CREATE_EXERCICES: "create_exercices",
+        DELETE_EXERCICE: "delete_exercice"
     },
     client: {
         CLIENT_BASIC: "client_basic"

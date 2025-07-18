@@ -35,6 +35,7 @@ const uploadExerciceImages = (req, res) => __awaiter(void 0, void 0, void 0, fun
             return (0, error_service_1.sendError)(res, 400, 'Exercice ID is required');
         }
         if (!mongoose_1.default.isValidObjectId(exerciceId)) {
+            yield cloudinary_config_1.cloudinary.uploader.destroy(req.file.filename || publicId);
             return (0, error_service_1.sendError)(res, 400, 'Invalid exercice ID format');
         }
         const imageUrl = req.file.path;

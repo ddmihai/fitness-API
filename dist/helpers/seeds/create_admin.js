@@ -19,21 +19,24 @@ const user_model_1 = __importDefault(require("../../models/user.model"));
 const permissions_constants_1 = require("../constants/permissions.constants");
 const createAdminUser = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const adminPerms = Object.values(permissions_constants_1.PERMISSIONS.admin);
         let adminRole = yield role_model_1.Role.findOne({ name: "admin" });
         if (!adminRole) {
-            // get all admin perms 
-            const adminPerms = Object.values(permissions_constants_1.PERMISSIONS.admin);
-            yield role_model_1.Role.create({
+            adminRole = yield role_model_1.Role.create({
                 name: 'admin',
                 displayName: 'Administrator',
                 description: 'Full access to system.',
-                permissions: [...adminPerms]
+                permissions: adminPerms
             });
         }
-        ;
-        // refetch the role and get the user
-        adminRole = yield role_model_1.Role.findOne({ name: "admin" });
-        let adminUser = yield user_model_1.default.findOne({ email: env_config_1.default.ADMIN_EMAIL });
+        else {
+            // Ensure role always has latest permissions
+            const updatedPerms = new Set([...adminRole.permissions, ...adminPerms]);
+            adminRole.permissions = Array.from(updatedPerms);
+            yield adminRole.save();
+        }
+        // Create admin user if not exists
+        const adminUser = yield user_model_1.default.findOne({ email: env_config_1.default.ADMIN_EMAIL });
         if (!adminUser) {
             yield user_model_1.default.create({
                 username: 'Administrator',
@@ -41,15 +44,13 @@ const createAdminUser = () => __awaiter(void 0, void 0, void 0, function* () {
                 lastName: 'Admin',
                 email: env_config_1.default.ADMIN_EMAIL,
                 password: env_config_1.default.ADMIN_PASSW,
-                roles: [adminRole === null || adminRole === void 0 ? void 0 : adminRole._id]
+                roles: [adminRole._id]
             });
         }
-        ;
         return;
     }
     catch (error) {
         console.error('Error creating admin user:', error);
-        // shutDown 
         process.exit(1);
     }
 });
