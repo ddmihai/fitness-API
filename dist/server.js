@@ -18,19 +18,48 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const db_config_1 = __importDefault(require("./database/db.config"));
 const redis_config_1 = require("./config/redis.config");
 const create_admin_1 = require("./helpers/seeds/create_admin");
+const path_1 = __importDefault(require("path"));
+const open_1 = __importDefault(require("open"));
+const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const server = http_1.default.createServer(app_1.default);
+// config for swagger opening in dev mode
+const isDev = process.env.NODE_ENV !== 'production';
+const swaggerUrl = `http://localhost:${PORT}/api-docs`;
+const tempFile = path_1.default.resolve(__dirname, '.swagger-opened');
+// --- Cleanup function ---
+function cleanUpSwaggerFlag() {
+    if (fs_1.default.existsSync(tempFile)) {
+        fs_1.default.unlinkSync(tempFile);
+    }
+}
+// --- Start server ---
 server.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, db_config_1.default)();
-    yield (0, create_admin_1.createAdminUser)();
-    yield (0, redis_config_1.connectRedis)();
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`Swagger docs at http://localhost:${PORT}/api-docs`);
+    try {
+        yield Promise.all([
+            (0, db_config_1.default)(),
+            (0, create_admin_1.createAdminUser)(),
+            (0, redis_config_1.connectRedis)(),
+        ]);
+        if (isDev && !fs_1.default.existsSync(tempFile)) {
+            yield (0, open_1.default)(swaggerUrl);
+            fs_1.default.writeFileSync(tempFile, 'opened');
+        }
+        console.log(`Swagger docs at ${swaggerUrl}`);
+        console.log(`Server is running on port ${PORT}`);
+    }
+    catch (err) {
+        console.error('Startup error:', err);
+        process.exit(1);
+    }
 }));
+// --- Graceful shutdown ---
+process.on('exit', cleanUpSwaggerFlag);
 process.on('SIGTERM', () => {
     console.info('SIGTERM signal received. Closing server...');
     server.close(() => {
+        cleanUpSwaggerFlag();
         console.log('Server closed gracefully.');
         process.exit(0);
     });
@@ -38,6 +67,7 @@ process.on('SIGTERM', () => {
 process.on('SIGINT', () => {
     console.info('SIGINT signal received. Closing server...');
     server.close(() => {
+        cleanUpSwaggerFlag();
         console.log('Server closed gracefully.');
         process.exit(0);
     });

@@ -9,14 +9,13 @@ import { upload } from '../middlewares/uploads/uploads.middleware';
 import { uploadExerciceImages } from '../controllers/exercices/uploadImagesExercice/uploadImagesExercice.controller';
 import { deleteImagesFromExercice } from '../controllers/exercices/deleteImages/deleteImages.controller';
 import { deleteExercice } from '../controllers/exercices/deleteExercice/deleteExercice.controller';
-
-
-// import { getExercisesByTargetMuscle } from '../controllers/exercices/getExerciceByTargetMuscle/getExerciceByTargetMuscle';
-// import getAllExercices from '../controllers/exercices/getAllExercice/getAllExercices.controller';
-
-
-
 const exerciceRouter = Router();
+
+
+
+
+
+
 
 exerciceRouter.post('/create-exercice',
     exerciceLimiter,
@@ -49,8 +48,7 @@ exerciceRouter.delete('/delete-exercice/:exerciceId',
 );
 
 
-// exerciceRouter.get('/get-exercice-by-target-muscle/:targetMuscle', exerciceLimiter, getExercisesByTargetMuscle);
-// exerciceRouter.get('/get-all-exercices', exerciceLimiter, getAllExercices);
+
 
 
 export default exerciceRouter;
