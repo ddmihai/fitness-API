@@ -19,6 +19,9 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const dbURI = process.env.NODE_ENV === 'production' ? env_config_1.default.MONGO_URI_PRODUCTION : env_config_1.default.MONGO_URI;
         yield mongoose_1.default.connect(dbURI);
+        mongoose_1.default.connection.on('connected', () => console.log('Mongoose connected'));
+        mongoose_1.default.connection.on('error', err => console.error('Mongoose connection error:', err));
+        mongoose_1.default.connection.on('disconnected', () => console.log('Mongoose disconnected'));
         const message = process.env.NODE_ENV === 'production' ? 'Production database connected successfully' : 'Development database connected successfully';
         console.log(message);
     }

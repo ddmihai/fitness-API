@@ -8,6 +8,7 @@ import exerciceRouter from './routes/exercice.routes';
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.config';
+import workoutRouter from './routes/workouts.routes';
 
 
 
@@ -33,8 +34,9 @@ app.get('/', (req: Request, res: Response) => {
     res.status(200).json({ message: 'Welcome to the Fitness Personal Training API' });
 });
 
-app.use('/api/v1/users', authenticationLimiter, userRouter);
-app.use('/api/v1/exercices', exerciceLimiter, exerciceRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/exercices', exerciceRouter);
+app.use('/api/v1/workouts', workoutRouter);
 
 
 // 404 Error handler
