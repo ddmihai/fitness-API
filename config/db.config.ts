@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
-import ENV from "../config/env.config";
+import ENV from "./env.config";
 
 
 // create function to establish database connection
 const connectDB = async () => {
     try {
-        const dbURI = ENV.MONGO_URI;
+        const dbURI = process.env.NODE_ENV === 'production' ? ENV.MONGO_URI_PRODUCTION : ENV.MONGO_URI;
         await mongoose.connect(dbURI);
 
-        console.log('Database connected successfully');
+        const message = process.env.NODE_ENV === 'production' ? 'Production database connected successfully' : 'Development database connected successfully';
+        console.log(message);
     }
     catch (error) {
         console.error('Database connection failed:', error);

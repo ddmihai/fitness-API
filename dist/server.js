@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const http_1 = __importDefault(require("http"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const db_config_1 = __importDefault(require("./database/db.config"));
+const db_config_1 = __importDefault(require("./config/db.config"));
 const redis_config_1 = require("./config/redis.config");
 const create_admin_1 = require("./helpers/seeds/create_admin");
 const path_1 = __importDefault(require("path"));

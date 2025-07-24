@@ -23,6 +23,12 @@ const ENV = {
     ADMIN_PASSW: getEnvVar("ADMIN_PASSW"),
     CLOUDINARY_API_KEY: getEnvVar("CLOUDINARY_API_KEY"),
     CLOUDINARY_API_SECRET: getEnvVar("CLOUDINARY_API_SECRET"),
-    CLOUDINARY_CLOUD_NAME: getEnvVar("CLOUDINARY_CLOUD_NAME")
+    CLOUDINARY_CLOUD_NAME: getEnvVar("CLOUDINARY_CLOUD_NAME"),
+    SMTP_HOST: getEnvVar("SMTP_HOST"),
+    SMTP_PORT: parseInt(getEnvVar("SMTP_PORT")), // ✅ correct key & number conversion
+    SMTP_SECURE: getEnvVar("SMTP_SECURE"),
+    SMTP_USER: getEnvVar("SMTP_USER"),
+    SMTP_PASS: getEnvVar("SMTP_PASS"),
+    MONGO_URI_PRODUCTION: getEnvVar("MONGO_URI_PRODUCTION")
 };
 exports.default = ENV;

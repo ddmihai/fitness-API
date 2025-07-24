@@ -2,7 +2,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 interface EnvConfig {
+    // Database
+    // Development
     MONGO_URI: string;
+    // Production
+    MONGO_URI_PRODUCTION: string;
+
+
     REDIS_URL: string;
     JWT_SECRET: string;
     ADMIN_EMAIL: string;
@@ -19,6 +25,7 @@ interface EnvConfig {
     SMTP_SECURE: string;
     SMTP_USER: string;
     SMTP_PASS: string;
+
 }
 
 
@@ -51,7 +58,9 @@ const ENV = {
     SMTP_PORT: parseInt(getEnvVar("SMTP_PORT")), // ✅ correct key & number conversion
     SMTP_SECURE: getEnvVar("SMTP_SECURE"),
     SMTP_USER: getEnvVar("SMTP_USER"),
-    SMTP_PASS: getEnvVar("SMTP_PASS")
+    SMTP_PASS: getEnvVar("SMTP_PASS"),
+
+    MONGO_URI_PRODUCTION: getEnvVar("MONGO_URI_PRODUCTION")
 };
 
 

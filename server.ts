@@ -1,7 +1,7 @@
 import app from './app';
 import http from 'http';
 import dotenv from 'dotenv';
-import connectDB from './database/db.config';
+import connectDB from './config/db.config';
 import { connectRedis } from './config/redis.config';
 import { createAdminUser } from './helpers/seeds/create_admin';
 import path from 'path';

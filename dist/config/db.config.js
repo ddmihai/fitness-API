@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const env_config_1 = __importDefault(require("../config/env.config"));
+const env_config_1 = __importDefault(require("./env.config"));
 // create function to establish database connection
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const dbURI = env_config_1.default.MONGO_URI;
+        const dbURI = process.env.NODE_ENV === 'production' ? env_config_1.default.MONGO_URI_PRODUCTION : env_config_1.default.MONGO_URI;
         yield mongoose_1.default.connect(dbURI);
-        console.log('Database connected successfully');
+        const message = process.env.NODE_ENV === 'production' ? 'Production database connected successfully' : 'Development database connected successfully';
+        console.log(message);
     }
     catch (error) {
         console.error('Database connection failed:', error);
