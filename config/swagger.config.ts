@@ -21,6 +21,10 @@ const swaggerOptions: swaggerJSDoc.Options = {
                 name: 'Users',
                 description: 'User management endpoints',
             },
+            {
+                name: 'Exercices',
+                description: 'Exercice endpoints. Create, update, delete and manage exercices',
+            }
         ],
         servers: [
             {

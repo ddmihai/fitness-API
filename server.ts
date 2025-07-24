@@ -39,6 +39,7 @@ server.listen(PORT, async () => {
             fs.writeFileSync(tempFile, 'opened');
         }
 
+
         console.log(`Swagger docs at ${swaggerUrl}`);
         console.log(`Server is running on port ${PORT}`);
     } catch (err) {

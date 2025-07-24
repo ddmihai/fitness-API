@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import { get } from "http";
 dotenv.config();
 
 interface EnvConfig {
@@ -9,9 +8,17 @@ interface EnvConfig {
     ADMIN_EMAIL: string;
     ADMIN_PASSW: string;
 
+    // cloudinary
     CLOUDINARY_CLOUD_NAME: string;
     CLOUDINARY_API_KEY: string;
-    CLOUDINARY_API_SECRET: string
+    CLOUDINARY_API_SECRET: string;
+
+    // email
+    SMTP_HOST: string;
+    SMTP_PORT: number;
+    SMTP_SECURE: string;
+    SMTP_USER: string;
+    SMTP_PASS: string;
 }
 
 
@@ -35,10 +42,18 @@ const ENV = {
     JWT_SECRET: getEnvVar("JWT_SECRET"),
     ADMIN_EMAIL: getEnvVar("ADMIN_EMAIL"),
     ADMIN_PASSW: getEnvVar("ADMIN_PASSW"),
+
     CLOUDINARY_API_KEY: getEnvVar("CLOUDINARY_API_KEY"),
     CLOUDINARY_API_SECRET: getEnvVar("CLOUDINARY_API_SECRET"),
-    CLOUDINARY_CLOUD_NAME: getEnvVar("CLOUDINARY_CLOUD_NAME")
+    CLOUDINARY_CLOUD_NAME: getEnvVar("CLOUDINARY_CLOUD_NAME"),
+
+    SMTP_HOST: getEnvVar("SMTP_HOST"),
+    SMTP_PORT: parseInt(getEnvVar("SMTP_PORT")), // ✅ correct key & number conversion
+    SMTP_SECURE: getEnvVar("SMTP_SECURE"),
+    SMTP_USER: getEnvVar("SMTP_USER"),
+    SMTP_PASS: getEnvVar("SMTP_PASS")
 };
+
 
 
 export default ENV as EnvConfig;
