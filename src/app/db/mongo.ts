@@ -1,0 +1,11 @@
+import mongoose from "mongoose";
+
+export const connectMongo = async (uri: string) => {
+    mongoose.set("strictQuery", true);
+
+    await mongoose.connect(uri, {
+        autoIndex: process.env.NODE_ENV !== "production",
+    });
+
+    console.log("📦 MongoDB connected");
+};
