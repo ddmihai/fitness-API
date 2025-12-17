@@ -6,27 +6,25 @@ import { env } from "../../../config/env";
 
 
 
+
+
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = req.body;
+        const emailInput = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+        const passwordInput = typeof req.body.password === "string" ? req.body.password.trim() : "";
 
-        // make sure we have a body request and fields
-        if (!email || !password) {
+        if (!emailInput || !passwordInput) {
             return res.status(400).json({ ok: false, message: "All fields are required" });
         }
 
-
-        // find user by email
-        // normalize email
-        const normalizedEmail = req.body.email.toLowerCase();
-        const user = await UserService.getUserByEmailWithPassword(normalizedEmail);
+        const user = await UserService.getUserByEmailWithPassword(emailInput);
+        console.log(user);
 
         if (!user) {
-            return res.status(404).json({ ok: false, message: "User not found" });
+            return res.status(401).json({ ok: false, message: "Invalid credentials" });
         };
 
-        // compare password
-        const isMatch = await user.comparePassword(password);
+        const isMatch = await user.comparePassword(passwordInput);
 
         if (!isMatch) {
             return res.status(401).json({ ok: false, message: "Invalid credentials" });

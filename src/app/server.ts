@@ -7,7 +7,7 @@ import { createAdmin } from "./utils/scripts/users/createAdmin.auto";
 
 
 export const startServer = async () => {
-    await connectMongo(env.MONGO_URI);
+    await connectMongo(env.MONGO_URI, env.MONGO_DB_NAME);
     await createAdmin();
 
     const server = http.createServer(app);

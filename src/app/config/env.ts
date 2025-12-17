@@ -11,5 +11,8 @@ export const env = {
     NODE_ENV: process.env.NODE_ENV ?? "development",
     PORT: Number(process.env.PORT ?? 3000),
     MONGO_URI: required("MONGO_URI"),
-    JWT_SECRET: required("JWT_SECRET")
+    MONGO_DB_NAME: process.env.MONGO_DB_NAME ?? "fitness_tracker",
+    JWT_SECRET: required("JWT_SECRET"),
+    SUPABASE_URL: required("SUPABASE_URL"),
+    SUPABASE_SERVICE_ROLE_KEY: required("SUPABASE_SERVICE_ROLE_KEY"),
 } as const;

@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const rate_limiter_1 = require("../../../middlewares/rate-limiter");
+const authGuard_1 = require("../../../middlewares/authGuard");
+const requireAdmin_1 = require("../../../middlewares/requireAdmin");
+const createexercice_1 = require("../controllers/createexercice");
+const deleteExercice_1 = require("../controllers/deleteExercice");
+const getexerciceDetails_1 = require("../controllers/getexerciceDetails");
+const getAllExercices_1 = require("../controllers/getAllExercices");
+const exerciceRouter = (0, express_1.Router)();
+exerciceRouter.post('/create', rate_limiter_1.globalLimiter, authGuard_1.authGuard, requireAdmin_1.adminGuard, createexercice_1.createExercise);
+exerciceRouter.delete('/delete/:id', rate_limiter_1.globalLimiter, authGuard_1.authGuard, requireAdmin_1.adminGuard, deleteExercice_1.deleteExercise);
+exerciceRouter.get('/exercice-detail/:id', rate_limiter_1.globalLimiter, getexerciceDetails_1.getExerciceDetails);
+exerciceRouter.get('/all-exercices', rate_limiter_1.globalLimiter, getAllExercices_1.getAllExercices);
+exports.default = exerciceRouter;

@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose, { HydratedDocument, InferSchemaType, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export enum UserRole {
@@ -69,8 +69,10 @@ userSchema.methods.comparePassword = async function (candidate: string): Promise
     return await bcrypt.compare(candidate, this.password);
 };
 
-export type UserDocument = InferSchemaType<typeof userSchema> & {
+type ComparePassword = {
     comparePassword(candidate: string): Promise<boolean>;
 };
+
+export type UserDocument = HydratedDocument<InferSchemaType<typeof userSchema> & ComparePassword>;
 
 export const User = model<UserDocument>("User", userSchema);

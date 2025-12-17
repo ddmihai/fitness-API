@@ -5,14 +5,15 @@ import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
-import rateLimit from "express-rate-limit";
 import { engine } from "express-handlebars";
+import swaggerUi from "swagger-ui-express";
 
 import { router } from "./routes";
 import { notFound } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/errorHandler";
 import authrouter from "./modules/auth/routes";
 import exerciceRouter from "./modules/exercises/routes";
+import { swaggerSpec } from "./docs/swagger";
 
 export const app = express();
 
@@ -43,7 +44,11 @@ app.set("views", path.join(process.cwd(), "src/app/views"));
 // static
 app.use("/public", express.static(path.join(process.cwd(), "src/app/public")));
 
-
+// docs
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: "Fitness Tracker API Docs",
+}));
+app.get("/docs.json", (_req, res) => res.json(swaggerSpec));
 
 // routes
 app.use(router);
