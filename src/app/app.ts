@@ -28,21 +28,26 @@ app.use(morgan("dev"));
 app.set("trust proxy", 1);
 
 
+const viewsDir = path.join(__dirname, "views");
+const layoutsDir = path.join(viewsDir, "layouts");
+const partialsDir = path.join(viewsDir, "partials");
+const publicDir = path.join(__dirname, "public");
+
 // views (Handlebars)
 app.engine(
     "hbs",
     engine({
         extname: ".hbs",
         defaultLayout: "main",
-        layoutsDir: path.join(process.cwd(), "src/app/views/layouts"),
-        partialsDir: path.join(process.cwd(), "src/app/views/partials"),
+        layoutsDir,
+        partialsDir,
     })
 );
 app.set("view engine", "hbs");
-app.set("views", path.join(process.cwd(), "src/app/views"));
+app.set("views", viewsDir);
 
 // static
-app.use("/public", express.static(path.join(process.cwd(), "src/app/public")));
+app.use("/public", express.static(publicDir));
 
 // docs
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Exercises from "../models";
 import { AppError } from "../../../errors/AppError";
 import { CreateExerciseDTO } from "../types";
+import { deleteExerciseImage } from "../../storage/services/exerciseImage.storage";
 
 
 export const exerciseService = {
@@ -14,7 +15,17 @@ export const exerciseService = {
         if (!exercise) {
             throw new AppError("Exercise not found", 404);
         }
+        const imagePath = exercise.imagePath;
         await exercise.deleteOne();
+
+        if (imagePath) {
+            try {
+                await deleteExerciseImage(imagePath);
+            } catch (error) {
+                console.error("Failed to delete exercise image:", error);
+            }
+        }
+
         return exercise;
     },
 
@@ -47,5 +58,33 @@ export const exerciseService = {
             }
             throw err;
         }
+    },
+
+    async updateExercise(id: string, data: Partial<CreateExerciseDTO>) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new AppError("Invalid exercise id", 400);
+        }
+
+        const payload: Partial<CreateExerciseDTO> = {};
+        if (typeof data.name === "string") payload.name = data.name;
+        if (typeof data.description === "string") payload.description = data.description;
+        if (Array.isArray(data.muscleGroups)) payload.muscleGroups = data.muscleGroups;
+        if (Array.isArray(data.category)) payload.category = data.category;
+        if (Array.isArray(data.equipment)) payload.equipment = data.equipment;
+
+        if (Object.keys(payload).length === 0) {
+            throw new AppError("No valid fields provided", 400);
+        }
+
+        const updated = await Exercises.findByIdAndUpdate(id, payload, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!updated) {
+            throw new AppError("Exercise not found", 404);
+        }
+
+        return updated;
     },
 };

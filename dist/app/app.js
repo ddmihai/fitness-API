@@ -29,17 +29,21 @@ exports.app.use(express_1.default.json({ limit: "1mb" }));
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use((0, morgan_1.default)("dev"));
 exports.app.set("trust proxy", 1);
+const viewsDir = path_1.default.join(__dirname, "views");
+const layoutsDir = path_1.default.join(viewsDir, "layouts");
+const partialsDir = path_1.default.join(viewsDir, "partials");
+const publicDir = path_1.default.join(__dirname, "public");
 // views (Handlebars)
 exports.app.engine("hbs", (0, express_handlebars_1.engine)({
     extname: ".hbs",
     defaultLayout: "main",
-    layoutsDir: path_1.default.join(process.cwd(), "src/app/views/layouts"),
-    partialsDir: path_1.default.join(process.cwd(), "src/app/views/partials"),
+    layoutsDir,
+    partialsDir,
 }));
 exports.app.set("view engine", "hbs");
-exports.app.set("views", path_1.default.join(process.cwd(), "src/app/views"));
+exports.app.set("views", viewsDir);
 // static
-exports.app.use("/public", express_1.default.static(path_1.default.join(process.cwd(), "src/app/public")));
+exports.app.use("/public", express_1.default.static(publicDir));
 // docs
 exports.app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.swaggerSpec, {
     customSiteTitle: "Fitness Tracker API Docs",

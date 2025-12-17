@@ -20,4 +20,5 @@ exports.env = {
     JWT_SECRET: required("JWT_SECRET"),
     SUPABASE_URL: required("SUPABASE_URL"),
     SUPABASE_SERVICE_ROLE_KEY: required("SUPABASE_SERVICE_ROLE_KEY"),
+    SUPABASE_BUCKET: process.env.SUPABASE_BUCKET ?? "fitness_tracker",
 };

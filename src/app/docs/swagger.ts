@@ -137,9 +137,47 @@ const swaggerDefinition: swaggerJsdoc.OAS3Definition = {
                             createdAt: { type: "string", format: "date-time" },
                             updatedAt: { type: "string", format: "date-time" },
                             __v: { type: "number", example: 0 },
+                            imagePath: {
+                                type: "string",
+                                nullable: true,
+                                description: "Internal storage path used for deletes",
+                                example: "exercises/6660b6212fc720001ec42fcd/1710265233.webp",
+                            },
                         },
                     },
                 ],
+            },
+            ExerciseImageUpload: {
+                type: "object",
+                required: ["image"],
+                properties: {
+                    image: {
+                        type: "string",
+                        format: "binary",
+                        description: "JPEG/PNG/WebP up to 5MB. Field name must be `image`.",
+                    },
+                },
+            },
+            ExerciseUpdateInput: {
+                type: "object",
+                description: "All fields optional; at least one property must be provided.",
+                properties: {
+                    name: { type: "string" },
+                    description: { type: "string" },
+                    muscleGroups: {
+                        type: "array",
+                        items: { type: "string" },
+                    },
+                    category: {
+                        type: "array",
+                        items: { type: "string" },
+                    },
+                    equipment: {
+                        type: "array",
+                        items: { type: "string" },
+                    },
+                },
+                minProperties: 1,
             },
         },
     },
@@ -531,6 +569,220 @@ const swaggerDefinition: swaggerJsdoc.OAS3Definition = {
                             "application/json": {
                                 schema: { $ref: "#/components/schemas/RateLimitError" },
                             },
+                        },
+                    },
+                },
+            },
+        },
+        "/v1/exercice/exercises/{id}": {
+            put: {
+                tags: ["Exercises"],
+                summary: "Update exercise details",
+                description: "Updates text fields such as name, description, muscle groups, categories, and equipment. Requires admin access.",
+                security: [{ cookieAuth: [] }],
+                parameters: [
+                    {
+                        in: "path",
+                        name: "id",
+                        required: true,
+                        schema: { type: "string", description: "Exercise Mongo ObjectId" },
+                    },
+                ],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/ExerciseUpdateInput" },
+                        },
+                    },
+                },
+                responses: {
+                    200: {
+                        description: "Exercise updated",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        ok: { type: "boolean", example: true },
+                                        data: { $ref: "#/components/schemas/Exercise" },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    400: {
+                        description: "Invalid id or payload",
+                        content: {
+                            "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+                        },
+                    },
+                    401: { description: "Unauthorized", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    403: { description: "Forbidden – requires admin role", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    404: { description: "Exercise not found", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    429: {
+                        description: "Global rate limit exceeded",
+                        content: {
+                            "application/json": { schema: { $ref: "#/components/schemas/RateLimitError" } },
+                        },
+                    },
+                },
+            },
+        },
+        "/v1/exercice/exercises/{id}/image": {
+            post: {
+                tags: ["Exercises"],
+                summary: "Upload exercise image",
+                description: "Adds a primary image to an exercise. Uses `sensitiveLimiter` (10 requests / 15 minutes). Accepts JPEG, PNG, or WebP up to 5MB via multipart form field `image`.",
+                security: [{ cookieAuth: [] }],
+                parameters: [
+                    {
+                        in: "path",
+                        name: "id",
+                        required: true,
+                        schema: { type: "string", description: "Exercise Mongo ObjectId" },
+                    },
+                ],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "multipart/form-data": {
+                            schema: { $ref: "#/components/schemas/ExerciseImageUpload" },
+                        },
+                    },
+                },
+                responses: {
+                    200: {
+                        description: "Image stored and exercise updated",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        ok: { type: "boolean", example: true },
+                                        data: { $ref: "#/components/schemas/Exercise" },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    400: {
+                        description: "Invalid id or missing/invalid file",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                            },
+                        },
+                    },
+                    401: { description: "Unauthorized", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    403: { description: "Forbidden – requires admin role", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    404: { description: "Exercise not found", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    429: {
+                        description: "Sensitive rate limit exceeded",
+                        content: {
+                            "application/json": { schema: { $ref: "#/components/schemas/RateLimitError" } },
+                        },
+                    },
+                },
+            },
+            put: {
+                tags: ["Exercises"],
+                summary: "Replace exercise image",
+                description: "Uploads a new image, swaps it in, and deletes the previous asset. Same constraints as upload.",
+                security: [{ cookieAuth: [] }],
+                parameters: [
+                    {
+                        in: "path",
+                        name: "id",
+                        required: true,
+                        schema: { type: "string", description: "Exercise Mongo ObjectId" },
+                    },
+                ],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "multipart/form-data": {
+                            schema: { $ref: "#/components/schemas/ExerciseImageUpload" },
+                        },
+                    },
+                },
+                responses: {
+                    200: {
+                        description: "Image replaced",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        ok: { type: "boolean", example: true },
+                                        data: { $ref: "#/components/schemas/Exercise" },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    400: {
+                        description: "Invalid id or missing/invalid file",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                            },
+                        },
+                    },
+                    401: { description: "Unauthorized", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    403: { description: "Forbidden – requires admin role", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    404: { description: "Exercise not found", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    429: {
+                        description: "Sensitive rate limit exceeded",
+                        content: {
+                            "application/json": { schema: { $ref: "#/components/schemas/RateLimitError" } },
+                        },
+                    },
+                },
+            },
+            delete: {
+                tags: ["Exercises"],
+                summary: "Delete exercise image",
+                description: "Removes the existing image from storage and clears the field. Uses `sensitiveLimiter`.",
+                security: [{ cookieAuth: [] }],
+                parameters: [
+                    {
+                        in: "path",
+                        name: "id",
+                        required: true,
+                        schema: { type: "string", description: "Exercise Mongo ObjectId" },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "Image deleted",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        ok: { type: "boolean", example: true },
+                                        data: { $ref: "#/components/schemas/Exercise" },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    400: {
+                        description: "Invalid id or exercise has no image",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                            },
+                        },
+                    },
+                    401: { description: "Unauthorized", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    403: { description: "Forbidden – requires admin role", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    404: { description: "Exercise not found", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+                    429: {
+                        description: "Sensitive rate limit exceeded",
+                        content: {
+                            "application/json": { schema: { $ref: "#/components/schemas/RateLimitError" } },
                         },
                     },
                 },

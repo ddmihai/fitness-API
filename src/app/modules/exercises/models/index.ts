@@ -11,6 +11,10 @@ const exerciceSchema = new mongoose.Schema({
         lowercase: true
     },
 
+    imagePath: {
+        type: String
+    },
+
     image: {
         type: String
     },
