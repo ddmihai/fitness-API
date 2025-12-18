@@ -9,6 +9,7 @@
     "build:client": "npm --prefix ../client run build",
     "build:server": "tsc -p tsconfig.json && node scripts/copyAssets.js",
     "render:build": "npm --prefix ../client install && npm run build",
+    "push": "bash scripts/push.sh",
     "start": "node dist/main.js",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:watch": "cross-env NODE_ENV=test jest --watch",

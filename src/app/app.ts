@@ -17,11 +17,31 @@ import exerciceRouter from "./modules/exercises/routes";
 import sessionRouter from "./modules/sessions/routes";
 import usersRouter from "./modules/users/routes";
 import { swaggerSpec } from "./docs/swagger";
+import { env } from "./config/env";
 
 export const app = express();
 
+const cspDirectives: helmet.ContentSecurityPolicyOptions["directives"] = {
+    ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+};
+
+const imageSources = ["'self'", "data:"] as string[];
+try {
+    const supabaseOrigin = new URL(env.SUPABASE_URL).origin;
+    imageSources.push(supabaseOrigin);
+} catch {
+    // ignore parsing errors and fall back to defaults
+}
+cspDirectives["img-src"] = imageSources;
+
 // security + basics
-app.use(helmet());
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: cspDirectives,
+        },
+    })
+);
 app.use(cors({ origin: true, credentials: true }));
 app.use(compression());
 app.use(cookieParser());
