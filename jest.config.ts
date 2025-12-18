@@ -6,5 +6,6 @@ const config: Config = {
     testMatch: ["**/*.spec.ts"],
     clearMocks: true,
     verbose: true,
+    setupFiles: ["<rootDir>/src/app/tests/setup.ts"],
 };
 export default config;

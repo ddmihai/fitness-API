@@ -1,1 +1,13 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const rate_limiter_1 = require("../../../middlewares/rate-limiter");
+const authGuard_1 = require("../../../middlewares/authGuard");
+const requireAdmin_1 = require("../../../middlewares/requireAdmin");
+const controllers_1 = require("../controllers");
+const usersRouter = (0, express_1.Router)();
+usersRouter.use(rate_limiter_1.globalLimiter, authGuard_1.authGuard, requireAdmin_1.adminGuard);
+usersRouter.get("/", controllers_1.listUsers);
+usersRouter.get("/:id", controllers_1.getUserDetails);
+usersRouter.patch("/:id", controllers_1.updateUserDetails);
+exports.default = usersRouter;

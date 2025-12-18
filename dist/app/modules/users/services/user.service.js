@@ -17,7 +17,7 @@ exports.UserService = {
         return await models_1.User.findOne({ email: normalizeEmail(email) });
     },
     async getAllUsers() {
-        return await models_1.User.find();
+        return await models_1.User.find().sort({ createdAt: -1 });
     },
     async getUserById(id) {
         return await models_1.User.findById(id);

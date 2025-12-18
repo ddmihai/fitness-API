@@ -4,12 +4,20 @@ import { AppError } from "../../../errors/AppError";
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 const normalizeName = (name: string) => name.trim();
 
+type Role = "user" | "admin" | "collaborator";
+
 type CreateUserDTO = {
     name: string;
     email: string;
     password: string;
-    role?: "user" | "admin" | "collaborator"; // optional 
+    role?: Role;
 };
+
+type UpdateUserDTO = Partial<{
+    name: string;
+    role: Role;
+    isActive: boolean;
+}>;
 
 
 
@@ -27,14 +35,14 @@ export const UserService = {
 
 
     async getAllUsers() {
-        return await User.find();
+        return await User.find().sort({ createdAt: -1 });
     },
 
     async getUserById(id: string) {
         return await User.findById(id);
     },
 
-    async updateUser(id: string, data: any) {
+    async updateUser(id: string, data: UpdateUserDTO) {
         return await User.findByIdAndUpdate(id, data, { new: true });
     },
 

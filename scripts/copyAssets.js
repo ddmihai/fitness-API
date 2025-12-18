@@ -12,6 +12,10 @@ const assets = [
         from: path.join(root, "src/app/public"),
         to: path.join(root, "dist/app/public"),
     },
+    {
+        from: path.join(root, "../client/dist"),
+        to: path.join(root, "dist/app/public/app"),
+    },
 ];
 
 for (const asset of assets) {
